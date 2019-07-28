@@ -1,5 +1,5 @@
 import * as faceapi from 'face-api.js';
-const path = require('path');
+import * as path from 'path';
 
 import { canvas, faceDetectionNet, faceDetectionOptions, saveFile } from './commons';
 

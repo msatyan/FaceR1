@@ -125,3 +125,4 @@ package-lock.json
 
 out
 out/*
+src/sample1/*.js

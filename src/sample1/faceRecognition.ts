@@ -1,15 +1,19 @@
 import * as faceapi from 'face-api.js';
+const path = require('path');
 
 import { canvas, faceDetectionNet, faceDetectionOptions, saveFile } from './commons';
 
-const REFERENCE_IMAGE = '../images/bbt1.jpg'
-const QUERY_IMAGE = '../images/bbt4.jpg'
+const REFERENCE_IMAGE = path.join( __dirname, '../images/bbt1.jpg' )
+const QUERY_IMAGE = path.join( __dirname, '../images/bbt4.jpg' );
 
 async function run() {
 
-  await faceDetectionNet.loadFromDisk('../../weights')
-  await faceapi.nets.faceLandmark68Net.loadFromDisk('../../weights')
-  await faceapi.nets.faceRecognitionNet.loadFromDisk('../../weights')
+  const weights_path = path.join( __dirname, '../../weights' );
+
+  // await faceDetectionNet.loadFromDisk('../../weights')
+  await faceDetectionNet.loadFromDisk( weights_path );
+  await faceapi.nets.faceLandmark68Net.loadFromDisk( weights_path )
+  await faceapi.nets.faceRecognitionNet.loadFromDisk( weights_path )
 
   const referenceImage = await canvas.loadImage(REFERENCE_IMAGE)
   const queryImage = await canvas.loadImage(QUERY_IMAGE)

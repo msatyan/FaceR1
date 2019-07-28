@@ -8,10 +8,10 @@ let QUERY_IMAGE = path.join( __dirname, '../images/bbt4.jpg' );
 
 const img_test = "C:/x-test-img/t1/";
 REFERENCE_IMAGE = img_test + "r1.jpg";
-QUERY_IMAGE  = img_test + "q2.jpg";
+QUERY_IMAGE  = img_test + "q1.jpg";
 
 
-async function run() {
+async function run( rImg: string, qImg: string ) {
 
   const weights_path = path.join( __dirname, '../../weights' );
 
@@ -20,8 +20,8 @@ async function run() {
   await faceapi.nets.faceLandmark68Net.loadFromDisk( weights_path )
   await faceapi.nets.faceRecognitionNet.loadFromDisk( weights_path )
 
-  const referenceImage = await canvas.loadImage(REFERENCE_IMAGE)
-  const queryImage = await canvas.loadImage(QUERY_IMAGE)
+  const referenceImage = await canvas.loadImage(rImg)
+  const queryImage = await canvas.loadImage(qImg)
 
   const resultsRef = await faceapi.detectAllFaces(referenceImage, faceDetectionOptions)
     .withFaceLandmarks()
@@ -75,4 +75,4 @@ async function run() {
   console.log( `pcount ${pcount}`);
 }
 
-run()
+run( REFERENCE_IMAGE, QUERY_IMAGE )

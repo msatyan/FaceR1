@@ -17,7 +17,7 @@
                 "ts-node/register"
             ],
             "args": [
-                "${workspaceFolder}/src/sample1/faceRecognition.ts"
+                "${workspaceFolder}/src/sample1/faceCompare.ts"
             ],
             "outFiles": [
                 "${workspaceFolder}/dist/**/*.js"

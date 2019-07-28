@@ -12,7 +12,13 @@
             "sourceMaps": true,
             "cwd": "${workspaceFolder}",
             "protocol": "inspector",
-            "program": "${workspaceFolder}/src/index.ts",
+            "runtimeArgs": [
+                "-r",
+                "ts-node/register"
+            ],
+            "args": [
+                "${workspaceFolder}/src/sample1/faceRecognition.ts"
+            ],
             "outFiles": [
                 "${workspaceFolder}/dist/**/*.js"
               ]

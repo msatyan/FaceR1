@@ -12,7 +12,7 @@ REFERENCE_IMAGE = img_test + "r1.jpg";
 QUERY_IMAGE = img_test + "q3.jpg";
 
 
-async function CompareImg(rImg: string, qImg: string, MatchThreshold = 4.5) {
+async function CompareImg(rImg: string, qImg: string, CustomConfidenceThreshold = 0.45) {
   let rc = { match: false, distance: 100 };
 
   const fDetectionOptions = new faceapi.SsdMobilenetv1Options({ minConfidence: 0.5 })
@@ -37,7 +37,7 @@ async function CompareImg(rImg: string, qImg: string, MatchThreshold = 4.5) {
     const faceMatcher = new faceapi.FaceMatcher(resultsRef)
     const bestMatch = faceMatcher.findBestMatch(resultsQuery[0].descriptor)
     // console.log(`bestMatch ${bestMatch}`);
-    if ( bestMatch.distance <= MatchThreshold ) {
+    if ( bestMatch.distance <= CustomConfidenceThreshold ) {
       rc.match = true;
       rc.distance = bestMatch.distance;
     }

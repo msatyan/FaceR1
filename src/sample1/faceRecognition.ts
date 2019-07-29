@@ -6,9 +6,9 @@ import { canvas, faceDetectionNet, faceDetectionOptions, saveFile } from './comm
 let REFERENCE_IMAGE = path.join( __dirname, '../images/bbt1.jpg' )
 let QUERY_IMAGE = path.join( __dirname, '../images/bbt4.jpg' );
 
-const img_test = "C:/x-test-img/t1/";
-REFERENCE_IMAGE = img_test + "r1.jpg";
-QUERY_IMAGE  = img_test + "q2.jpg";
+// const img_test = "C:/x-test-img/t1/";
+// REFERENCE_IMAGE = img_test + "r1.jpg";
+// QUERY_IMAGE  = img_test + "q2.jpg";
 
 
 async function run() {

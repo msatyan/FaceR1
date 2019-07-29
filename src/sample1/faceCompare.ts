@@ -1,78 +1,56 @@
 import * as faceapi from 'face-api.js';
 import * as path from 'path';
 
-import { canvas, faceDetectionNet, faceDetectionOptions, saveFile } from './commons';
+import { canvas, faceDetectionNet, saveFile } from './commons';
 
-let REFERENCE_IMAGE = path.join( __dirname, '../images/bbt1.jpg' )
-let QUERY_IMAGE = path.join( __dirname, '../images/bbt4.jpg' );
+const weights_path = path.join(__dirname, '../../weights');
+let REFERENCE_IMAGE = path.join(__dirname, '../images/bbt1.jpg')
+let QUERY_IMAGE = path.join(__dirname, '../images/bbt4.jpg');
 
 const img_test = "C:/x-test-img/t1/";
 REFERENCE_IMAGE = img_test + "r1.jpg";
-QUERY_IMAGE  = img_test + "q1.jpg";
+QUERY_IMAGE = img_test + "q3.jpg";
 
 
-async function run( rImg: string, qImg: string ) {
+async function CompareImg(rImg: string, qImg: string, MatchThreshold = 4.5) {
+  let rc = { match: false, distance: 100 };
 
-  const weights_path = path.join( __dirname, '../../weights' );
+  const fDetectionOptions = new faceapi.SsdMobilenetv1Options({ minConfidence: 0.5 })
 
-  // await faceDetectionNet.loadFromDisk('../../weights')
-  await faceDetectionNet.loadFromDisk( weights_path );
-  await faceapi.nets.faceLandmark68Net.loadFromDisk( weights_path )
-  await faceapi.nets.faceRecognitionNet.loadFromDisk( weights_path )
+  await faceDetectionNet.loadFromDisk(weights_path);
+  await faceapi.nets.faceLandmark68Net.loadFromDisk(weights_path)
+  await faceapi.nets.faceRecognitionNet.loadFromDisk(weights_path)
 
   const referenceImage = await canvas.loadImage(rImg)
   const queryImage = await canvas.loadImage(qImg)
 
-  const resultsRef = await faceapi.detectAllFaces(referenceImage, faceDetectionOptions)
+  const resultsRef = await faceapi.detectAllFaces(referenceImage, fDetectionOptions)
     .withFaceLandmarks()
     .withFaceDescriptors()
 
-  const resultsQuery = await faceapi.detectAllFaces(queryImage, faceDetectionOptions)
+  const resultsQuery = await faceapi.detectAllFaces(queryImage, fDetectionOptions)
     .withFaceLandmarks()
     .withFaceDescriptors()
 
-  console.log( `resultsRef ${resultsRef}`);
-  console.log();
-  const s = JSON.stringify( resultsRef );
-  console.log( `resultsRef String ${s}`);
-  console.log();
+  if (resultsRef.length === 1 &&
+    resultsQuery.length === 1) {
+    const faceMatcher = new faceapi.FaceMatcher(resultsRef)
+    const bestMatch = faceMatcher.findBestMatch(resultsQuery[0].descriptor)
+    // console.log(`bestMatch ${bestMatch}`);
+    if ( bestMatch.distance <= MatchThreshold ) {
+      rc.match = true;
+      rc.distance = bestMatch.distance;
+    }
+  }
 
+  return( rc );
 
-  const faceMatcher = new faceapi.FaceMatcher(resultsRef)
-
-  const labels = faceMatcher.labeledDescriptors
-    .map(ld => ld.label)
-  const refDrawBoxes = resultsRef
-    .map(res => res.detection.box)
-    .map((box, i) => new faceapi.draw.DrawBox(box, { label: labels[i] }))
-  const outRef = faceapi.createCanvasFromMedia(referenceImage)
-  refDrawBoxes.forEach(drawBox => drawBox.draw(outRef))
-
-  saveFile('referenceImage.jpg', (outRef as any).toBuffer('image/jpeg'))
-
-  let pcount = 0;
-
-  const queryDrawBoxes = resultsQuery.map(res => {
-    const bestMatch = faceMatcher.findBestMatch(res.descriptor)
-
-    // const s = JSON.stringify( res.descriptor );
-    //console.log( `res.descriptor String ${s}`);
-    console.log();
-
-    // console.log( `res ${res}` )
-    console.log( `bestMatch ${bestMatch}` )
-    ++pcount;
-
-    return new faceapi.draw.DrawBox(res.detection.box, { label: bestMatch.toString() })
-  })
-
-
-
-  const outQuery = faceapi.createCanvasFromMedia(queryImage)
-  queryDrawBoxes.forEach(drawBox => drawBox.draw(outQuery))
-  saveFile('queryImage.jpg', (outQuery as any).toBuffer('image/jpeg'))
-  console.log('done, saved results to out/queryImage.jpg')
-  console.log( `pcount ${pcount}`);
 }
 
-run( REFERENCE_IMAGE, QUERY_IMAGE )
+async function RUN() {
+  const rc = await CompareImg(REFERENCE_IMAGE, QUERY_IMAGE);
+  console.log(`rc = ` + JSON.stringify(rc) );
+}
+
+RUN()
+console.log( " Don !!!" );

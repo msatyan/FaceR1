@@ -28,8 +28,7 @@ class FaceCompare {
   async Compare(rImg: string, qImg: string, CustomConfidenceThreshold = 0.45) {
     let rc = { match: false, confidence: 0 };
 
-    if ( this.IsWeightLoaded == false )
-    {
+    if (this.IsWeightLoaded == false) {
       await faceDetectionNet.loadFromDisk(this.weights_path);
       await faceapi.nets.faceLandmark68Net.loadFromDisk(this.weights_path);
       await faceapi.nets.faceRecognitionNet.loadFromDisk(this.weights_path);
@@ -67,12 +66,12 @@ wss.on('connection', (ws: any) => {
   // ws has to of type any to assign a new element
   ws['id'] = uuid.v4();
   const wt_path = path.join(__dirname, '../../weights');
-  const TestImgPath1 = path.join(__dirname, "../images/test1/" )
-  let faceCompare = new FaceCompare( wt_path );
+  const TestImgPath1 = path.join(__dirname, "../images/test1/")
+  let faceCompare = new FaceCompare(wt_path);
 
   // The incoming message
-  ws.on('message', async function incoming( message: string) {
-    let req : any;
+  ws.on('message', async function incoming(message: string) {
+    let req: any;
     let action = "";
     let id = 0;
 
@@ -81,32 +80,33 @@ wss.on('connection', (ws: any) => {
       action = req.action;
       id = req.id;
     }
-    catch(error) {
+    catch (error) {
     }
 
-    let res  = undefined;
-    if( action == 'Compare2' ) {
+    let res = undefined;
+    if (action == 'Compare2') {
       let rc = await faceCompare.Compare(
         TestImgPath1 + "t1/JustinTrudeau-1.jpg",
-        TestImgPath1 + "t1/JustinTrudeau-3.jpg" );
+        TestImgPath1 + "t1/JustinTrudeau-3.jpg");
 
-      res =  {
+      res = {
         id: id,
         action: action,
         match: rc.match,
         confidence: rc.confidence
       };
 
-    } else {
-      res = {id: id, action: "unknown request"};
+    }
+    else {
+      res = { id: id, action: "unknown request" };
     }
     const s = JSON.stringify(res);
-    console.log( s );
-    ws.send( s );
+    console.log(s);
+    ws.send(s);
 
   });
 
-   ws.send( JSON.stringify( {id: ws.id, action: "connection",  msg: "Success"} ) );
+  ws.send(JSON.stringify({ id: ws.id, action: "connection", msg: "Success" }));
 
 });
 

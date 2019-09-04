@@ -84,10 +84,19 @@ wss.on('connection', (ws: any) => {
     }
 
     let res = undefined;
-    if (action == 'Compare2') {
+    if (action == 'Compare1') {
       let rc = await faceCompare.Compare(
-        TestImgPath1 + "t1/JustinTrudeau-1.jpg",
-        TestImgPath1 + "t1/JustinTrudeau-3.jpg");
+        TestImgPath1 + req.img1,
+        TestImgPath1 + req.img2 );
+      res = {
+        id: id,
+        action: action,
+        match: rc.match,
+        confidence: rc.confidence
+      };
+    }
+    else if (action == 'Compare2') {
+      let rc = await faceCompare.Compare( req.img1, req.img2 );
 
       res = {
         id: id,

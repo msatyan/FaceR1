@@ -90,6 +90,7 @@ wss.on('connection', (ws: any) => {
         TestImgPath1 + req.img2 );
       res = {
         id: id,
+        xid:2001,
         action: action,
         match: rc.match,
         confidence: rc.confidence
@@ -100,6 +101,7 @@ wss.on('connection', (ws: any) => {
 
       res = {
         id: id,
+        xid:2001,
         action: action,
         match: rc.match,
         confidence: rc.confidence
@@ -107,7 +109,7 @@ wss.on('connection', (ws: any) => {
 
     }
     else {
-      res = { id: id, action: "unknown request" };
+      res = { id: id, xid:3, action: "unknown request" };
     }
     const s = JSON.stringify(res);
     console.log(s);
@@ -115,7 +117,7 @@ wss.on('connection', (ws: any) => {
 
   });
 
-  ws.send(JSON.stringify({ id: ws.id, action: "connection", msg: "Success" }));
+  ws.send(JSON.stringify({ id: ws.id, xid:1, action: "connection", msg: "Success" }));
 
 });
 

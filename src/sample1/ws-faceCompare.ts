@@ -109,6 +109,7 @@ wss.on('connection', (ws: any) => {
 
     }
     else {
+      console.log(message);
       res = { id: id, xid:3, action: "unknown request" };
     }
     const s = JSON.stringify(res);

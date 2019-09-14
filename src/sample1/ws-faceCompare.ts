@@ -70,7 +70,7 @@ wss.on('connection', (ws: any) => {
   let faceCompare = new FaceCompare(wt_path);
 
   // The incoming message
-  ws.on('message', async function incoming(message: string) {
+  ws.on('message', async function incoming(message: any) {
     let req: any;
     let action = "";
     let id = 0;
@@ -81,6 +81,8 @@ wss.on('connection', (ws: any) => {
       id = req.id;
     }
     catch (error) {
+      console.log("JSON.parse Error: message in param" );
+      console.log("message.len = " + message.length);
     }
 
     let res = undefined;
@@ -110,6 +112,9 @@ wss.on('connection', (ws: any) => {
     }
     else {
       console.log(message);
+      console.log(req);
+      console.log('action :' + action);
+      console.log('message len :' + message.length);
       res = { id: id, xid:3, action: "unknown request" };
     }
     const s = JSON.stringify(res);

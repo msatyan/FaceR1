@@ -22,7 +22,7 @@ class FaceCompare {
   fDetectionOptions: any;
   IsWeightLoaded: boolean;
 
-  constructor(weights_path: string, minConfidence = 0.5) {
+  constructor(weights_path: string, minConfidence = 0.45) {
     this.weights_path = weights_path;
     this.minConfidence = minConfidence;
     this.IsWeightLoaded = false;
@@ -57,8 +57,8 @@ class FaceCompare {
       // console.log(`bestMatch ${bestMatch}`);
       if (bestMatch.distance <= CustomConfidenceThreshold) {
         rc.match = true;
-        rc.eDistance = bestMatch.distance * 100;
       }
+      rc.eDistance = bestMatch.distance * 100;
     }
     return (rc);
   }

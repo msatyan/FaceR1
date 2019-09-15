@@ -26,7 +26,7 @@ class FaceCompare {
   }
 
   async Compare(rImg: string, qImg: string, CustomConfidenceThreshold = 0.45) {
-    let rc = { match: false, confidence: 0 };
+    let rc = { match: false, eDistance: 0 };
 
     if (this.IsWeightLoaded == false) {
       await faceDetectionNet.loadFromDisk(this.weights_path);
@@ -52,7 +52,7 @@ class FaceCompare {
       // console.log(`bestMatch ${bestMatch}`);
       if (bestMatch.distance <= CustomConfidenceThreshold) {
         rc.match = true;
-        rc.confidence = (1 - bestMatch.distance) * 100;
+        rc.eDistance = bestMatch.distance * 100;
       }
     }
     return (rc);

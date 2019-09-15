@@ -70,11 +70,11 @@ wss.on('connection', (ws: any) => {
   let faceCompare = new FaceCompare(wt_path);
 
   // The incoming message
-  ws.on('message', async function incoming(message: string) {
+  ws.on('message', async function incoming(message: any) {
     let req: any;
     let action = "";
     let id = 0;
-    
+
     var message_text = message.toString('utf8');
     // console.log( "typeof(message) : " + typeof(message));
     // console.log( "typeof(message_text) : " + typeof(message_text));
@@ -89,7 +89,7 @@ wss.on('connection', (ws: any) => {
       console.log( message_text );
       // const buff = fs.writeFileSync( './0.out.js', message_text);
       console.log("JSON.parse Error: message in param" );
-      console.log("message.len = " + message_text.length); 
+      console.log("message.len = " + message_text.length);
     }
 
     let res = undefined;

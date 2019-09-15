@@ -8,6 +8,11 @@ import { canvas, faceDetectionNet } from './commons';
 import * as WebSocket from 'ws';
 import * as uuid from "uuid";
 
+//import * as os from "os";
+const os = require('os');
+
+// os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+
 const wss = new WebSocket.Server({ port: 8080 });
 
 
@@ -102,7 +107,7 @@ wss.on('connection', (ws: any) => {
         xid:2001,
         action: action,
         match: rc.match,
-        confidence: rc.confidence
+        eDistance: rc.eDistance
       };
     }
     else if (action == 'Compare2') {
@@ -113,7 +118,7 @@ wss.on('connection', (ws: any) => {
         xid:2001,
         action: action,
         match: rc.match,
-        confidence: rc.confidence
+        eDistance: rc.eDistance
       };
 
     }

@@ -22,6 +22,7 @@
     "@types/uuid": "^3.4.5",
     "@types/ws": "^6.0.3",
     "face-api.js": "^0.20.1",
+    "os": "^0.1.1",
     "tfjs-image-recognition-base": "^0.6.1",
     "tslib": "^1.10.0",
     "uuid": "^3.3.2",

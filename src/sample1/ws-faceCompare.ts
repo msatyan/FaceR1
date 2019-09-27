@@ -103,8 +103,8 @@ wss.on('connection', (ws: any) => {
         TestImgPath1 + req.img1,
         TestImgPath1 + req.img2 );
       res = {
-        id: id,
         xid:2001,
+        id: id,
         action: action,
         match: rc.match,
         eDistance: rc.eDistance
@@ -114,8 +114,8 @@ wss.on('connection', (ws: any) => {
       let rc = await faceCompare.Compare( req.img1, req.img2 );
 
       res = {
-        id: id,
         xid:2001,
+        id: id,
         action: action,
         match: rc.match,
         eDistance: rc.eDistance
@@ -126,7 +126,7 @@ wss.on('connection', (ws: any) => {
       console.log(req);
       console.log('action :' + action);
       console.log('message len :' + message.length);
-      res = { id: id, xid:3, action: "unknown request" };
+      res = { xid:3, id: id,  action: "unknown request" };
     }
     const s = JSON.stringify(res);
     console.log(s);
@@ -134,7 +134,7 @@ wss.on('connection', (ws: any) => {
 
   });
 
-  ws.send(JSON.stringify({ id: ws.id, xid:1, action: "connection", msg: "Success" }));
+  ws.send(JSON.stringify( {xid:1, id:ws.id, action:"connection", msg:"Success" }));
 
 });
 

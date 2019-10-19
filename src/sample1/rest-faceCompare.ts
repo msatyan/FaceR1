@@ -86,18 +86,16 @@ class App {
 
         this.app.post("/v1/fc1", async  (req:any, res:any) => {
             console.log( req.body );
-            let rc = await this.faceCompare.Compare(
+            const rc = await this.faceCompare.Compare(
                 this.TestImgPath1 + req.body.img1,
                 this.TestImgPath1 + req.body.img2 );
             res.send( rc );
           });
 
-          this.app.post("/v2/fc1", async  (req:any, res:any) => {
-            console.log( "/v2/fc1" );
+          this.app.post("/v1/fc2", async  (req:any, res:any) => {
             console.log( req.body );
-            let rc = await this.faceCompare.Compare(
-                this.TestImgPath1 + req.body.img1,
-                this.TestImgPath1 + req.body.img2 );
+            const rc = await this.faceCompare.Compare( req.body.img1, req.body.img2 );
+            console.log( rc );
             res.send( rc );
           });
 

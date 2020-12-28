@@ -1,0 +1,22 @@
+
+
+# POST
+
+curl -X POST -H "Accept: application/json" -H "Content-Type: application/json" -d '{
+  "id": 102,
+  "img1": "modi1.jpg",
+  "img2": "modi2.jpg"
+}
+' "http://localhost:3000/v1/fc1"
+
+
+curl -X POST -H "Accept: application/json" -H "Content-Type: application/json" -d '{
+  "id": 102,
+  "img1": "modi1.jpg",
+  "img2": "JustinTrudeau1.jpg"
+}
+' "http://localhost:3000/v1/fc1"
+
+
+
+

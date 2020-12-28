@@ -54,16 +54,67 @@ class FaceCompare {
       resultsQuery.length === 1) {
       const faceMatcher = new faceapi.FaceMatcher(resultsRef)
       const bestMatch = faceMatcher.findBestMatch(resultsQuery[0].descriptor)
-      // console.log(`bestMatch ${bestMatch}`);
+      // sat
+      console.log(`bestMatch = ${bestMatch}`);
+      // console.log( resultsQuery[0]);
+      // console.log( resultsQuery[0].descriptor);
+      // Object.keys(resultsQuery[0].descriptor).forEach((prop)=> console.log(prop));
+
+
+      // console.log( "resultsRef = " );
+      // console.log(JSON.stringify( resultsRef[0].descriptor, null, 4));
+
+      // console.log( "resultsQuery = " );
+      // console.log(JSON.stringify( resultsQuery[0].descriptor, null, 4));
+
       if (bestMatch.distance <= CustomConfidenceThreshold) {
         rc.match = true;
       }
+      MyEuclideanDistance(resultsRef[0].descriptor, resultsQuery[0].descriptor);
       rc.eDistance = bestMatch.distance * 100;
     }
     return (rc);
   }
+
+  ////////////
+
+  async GetImgLandmarks(rImg: string) {
+    let rc = { landmarks: "" };
+
+    if (this.IsWeightLoaded == false) {
+      await faceDetectionNet.loadFromDisk(this.weights_path);
+      await faceapi.nets.faceLandmark68Net.loadFromDisk(this.weights_path);
+      await faceapi.nets.faceRecognitionNet.loadFromDisk(this.weights_path);
+      this.IsWeightLoaded = true;
+    }
+    const referenceImage = await canvas.loadImage(rImg)
+    const resultsRef = await faceapi.detectAllFaces(referenceImage, this.fDetectionOptions)
+      .withFaceLandmarks()
+      .withFaceDescriptors()
+
+    if (resultsRef.length === 1) {
+      rc.landmarks = resultsRef[0].descriptor.join(', ');
+    } else {
+      console.log(`incorrect number of objects: resultsRef.length=${resultsRef.length}`);
+    }
+
+    return (rc);
+  }
+
 }
 
+
+
+function MyEuclideanDistance(v1: Float32Array, v2: Float32Array) {
+  let s = 0.0;
+  for (let i = 0; i < v1.length; ++i) {
+    s += Math.pow(v1[i] - v2[i], 2);
+  }
+  let eqd = Math.sqrt(s);
+
+  console.log(`MyEuclideanDistance = ${eqd}`);
+  // MyEuclideanDistance = 0.2197259894762486
+}
 
 
 //////////////////////////////////////////////
@@ -89,11 +140,12 @@ wss.on('connection', (ws: any) => {
       req = JSON.parse(message);
       action = req.action;
       id = req.id;
+      console.log(`action : ${action}, id = ${id} `);
     }
     catch (error) {
-      console.log( message_text );
+      console.log(message_text);
       // const buff = fs.writeFileSync( './0.out.js', message_text);
-      console.log("JSON.parse Error: message in param" );
+      console.log("JSON.parse Error: message in param");
       console.log("message.len = " + message_text.length);
     }
 
@@ -101,9 +153,9 @@ wss.on('connection', (ws: any) => {
     if (action == 'Compare1') {
       let rc = await faceCompare.Compare(
         TestImgPath1 + req.img1,
-        TestImgPath1 + req.img2 );
+        TestImgPath1 + req.img2);
       res = {
-        xid:2001,
+        xid: 2001,
         id: id,
         action: action,
         match: rc.match,
@@ -111,30 +163,49 @@ wss.on('connection', (ws: any) => {
       };
     }
     else if (action == 'Compare2') {
-      let rc = await faceCompare.Compare( req.img1, req.img2 );
+      let rc = await faceCompare.Compare(req.img1, req.img2);
 
       res = {
-        xid:2001,
+        xid: 2001,
         id: id,
         action: action,
         match: rc.match,
         eDistance: rc.eDistance
       };
 
-    }
-    else {
+    } else if (action === 'GetImgLandmarks' || action === 'GetImgLandmarksTest' ) {
+      let img = req.img1;
+
+      if (action === 'GetImgLandmarksTest'){
+        img = TestImgPath1 + req.img1;
+        console.log('GetImgLandmarksTest: ' + img);
+      }
+      let rc = await faceCompare.GetImgLandmarks(img);
+      res = rc.landmarks;
+
+    } else {
       console.log(req);
       console.log('action :' + action);
       console.log('message len :' + message.length);
-      res = { xid:3, id: id,  action: "unknown request" };
+      res = { xid: 3, id: id, action: "unknown request" };
     }
-    const s = JSON.stringify(res);
-    console.log(s);
-    ws.send(s);
+
+
+    ////// Process res for sending
+    if (action === 'GetImgLandmarks' || action === 'GetImgLandmarksTest' ) {
+      // res has already set 
+      // console.log('ReturnResult=' + res);
+    }
+    else {
+      res = JSON.stringify(res);
+    }
+
+    console.log('res len =' + res.length);
+    ws.send(res);
 
   });
 
-  ws.send(JSON.stringify( {xid:1, id:ws.id, action:"connection", msg:"Success" }));
+  ws.send(JSON.stringify({ xid: 1, id: ws.id, action: "connection", msg: "Success" }));
 
 });
 

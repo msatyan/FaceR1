@@ -5,6 +5,9 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon src/sample1/index.ts",
+    "tsc": "tsc",
+    "tsc-es6": "tsc --p tsconfig.es6.json",
+    "build": "rm -rf ./build && rm -rf ./dist && npm run tsc && npm run tsc-es6",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -24,7 +27,7 @@
     "@types/ws": "^6.0.3",
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
-    "face-api.js": "^0.20.1",
+    "face-api.js": "^0.22.1",
     "nodemon": "^1.18.9",
     "os": "^0.1.1",
     "tfjs-image-recognition-base": "^0.6.2",
@@ -36,6 +39,7 @@
     "@tensorflow/tfjs-node": "^1.2.11",
     "@types/jasmine": "^3.4.0",
     "@types/node": "^12.7.5",
+    "@types/webgl2": "0.0.5",
     "canvas": "^2.5.0",
     "jasmine": "^3.4.0",
     "jasmine-core": "^3.4.0",
